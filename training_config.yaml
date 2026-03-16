@@ -1,0 +1,66 @@
+training:
+  mode: train
+  epochs: 1
+  batch_size: 32
+  learning_rate: 0.0003
+  wdecay: 0.015
+  patience: 5
+  scheduler_patience: 2
+  save_epoch_ckpt: true
+  loss_type: combine
+  shuffle_coord: true
+  subsample_voxels: true
+  num_voxels: 2000
+  model_save_iter: null
+
+positional_embed:
+  type: gaussian
+  gaussian:
+    B_matrix_dir: null
+    std: 32
+    num_features: 32
+
+image_embedding:
+  model_name: openai/clip-vit-base-patch16
+  selected_layers:
+  - 3
+  - 6
+
+data_src:
+  data_subject_list:
+  - 1
+  model_subject_list:
+  - 1
+  roi_list:
+  - nsdgeneral
+  average_data: true
+  training_image_idx: null
+
+model:
+  num_layers: 8
+  hidden_layer_dim: 4096
+  latent_in: []
+  dropout_layer: null
+  dropout_prob: 0.2
+  weight_norm: false
+  weight_norm_layer: []
+
+feature_merger:
+  num_patches: 14
+  downsample_dim: 512
+  early_feat_input_dim: 768
+  higher_feat_input_dim: 512
+
+finetune:
+  pretrained_config_dir: null
+  pretrained_ckpt_name: null
+  train_encoder: true
+  train_feature_merger: true
+
+# Evaluation: null values fall back to the corresponding data_src settings.
+evaluation:
+  subject_list: null
+  roi_list: null
+  data_type: null
+  output_name: null
+
