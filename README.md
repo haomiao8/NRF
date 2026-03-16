@@ -58,8 +58,11 @@ python -m nsd_data_processing.getmaskedROI        --subject 1
 python -m nsd_data_processing.getmaskedROIaverage --subject 1
 ```
 
-Raw NSD data is read from `nsd_root`, outputs are written to `data_root/subjXX/` (both set in `config.yaml`).
-The training dataloader reads from the same directory.
+Raw NSD data is read from `nsd_root`, and processed outputs are written under:
+`data_root/roi_masks/subjXX/`, `data_root/roi_response/subjXX/`,
+`data_root/roi_response_average/subjXX/`, and `data_root/MNI_coordinate/subjXX/`
+(all configured via `config.yaml`).
+The training dataloader reads from the same processed tree.
 
 ## Two config files
 
@@ -174,8 +177,8 @@ All flags are optional and override the corresponding experiment config value.
 | `--batch_size` | `training.batch_size` | Batch size |
 | `--learning_rate` | `training.learning_rate` | Learning rate |
 | `--shuffle_coord` | `training.shuffle_coord` | Randomly permute voxel order per batch |
-| — | `training.subsample_voxels` | Subsample a fixed number of voxels per batch |
-| — | `training.num_voxels` | Number of voxels to subsample (requires `subsample_voxels: true`) |
+| `--subsample_voxels` | `training.subsample_voxels` | Subsample a fixed number of voxels per batch |
+| `--num_voxels` | `training.num_voxels` | Number of voxels to subsample (requires `subsample_voxels: true`) |
 | `--data_subject_list` | `data_src.data_subject_list` | Training subject id(s) |
 | `--roi_list` | `data_src.roi_list` | ROI name(s) (e.g. `nsdgeneral`, `FFA1 PPA V1v`) |
 | `--training_image_idx` | `data_src.training_image_idx` | `.npy` file with training image ids |
