@@ -1,10 +1,10 @@
 # Beyond Grid-Locked Voxels: Neural Response Functions for Continuous Brain Encoding
 
-Haomiao Chen, Keith W. Jamison, Mert R. Sabuncu, Amy Kuceyeski
+## **Haomiao Chen, Keith W. Jamison, Mert R. Sabuncu, Amy Kuceyeski**
 
 ICLR 2026
 
-[[Paper (arXiv)]](https://arxiv.org/abs/2510.07342)
+[[Paper link]](https://arxiv.org/abs/2510.07342)
 
 This is the official code release for *Beyond Grid-Locked Voxels: Neural Response Functions for Continuous Brain Encoding*.
 
