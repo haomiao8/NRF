@@ -12,8 +12,7 @@ from utils.config import PATHS, SUBJECT_ROIS
 from utils.config import get_coordinate_path, get_image_order_path, get_avg_response_path
 
 
-nsd_root = Path(PATHS["nsd_root"])
-stim_root = nsd_root / "stimuli"
+stim_root = Path(PATHS["stimuli_dir"])
 responses_root = Path(PATHS["data_root"])
 
 
@@ -61,7 +60,7 @@ class neural_loader(torch.utils.data.Dataset):
     def _load_subject(self, subject: int, selected_rois, trn_image_idx) -> None:
         str_subject = str(subject)
         subj_image_idx = np.load(get_image_order_path(subject))
-        subj_val_image_idx = np.load(Path(__file__).resolve().parent / "validation_idx.npy")
+        subj_val_image_idx = np.load("validation_idx.npy")
 
         if not trn_image_idx:
             subj_trn_image_idx = subj_image_idx[subj_image_idx >= 1000]

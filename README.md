@@ -1,5 +1,17 @@
 # Beyond Grid-Locked Voxels: Neural Response Functions for Continuous Brain Encoding
 
+Haomiao Chen, Keith W. Jamison, Mert R. Sabuncu, Amy Kuceyeski
+
+ICLR 2026
+
+[[Paper (arXiv)]](https://arxiv.org/abs/2510.07342)
+
+This is the official code release for *Beyond Grid-Locked Voxels: Neural Response Functions for Continuous Brain Encoding*.
+
+<p align="center">
+  <img src="flowchart.png" width="100%" />
+</p>
+
 ## Repository layout
 
 ```
@@ -14,6 +26,7 @@ train/
   nrf_trainer.py             # NRFTrainer class (training loop, eval, checkpointing)
   training_utils.py          # loss, scoring, positional embedding, checkpoint I/O
   dataloader.py              # NSD dataset loader (returns raw images)
+  validation_idx.npy         # 907 NSD image IDs from the shared-1k set (shown to all subjects)
 
 model/
   nrf_encoder.py             # NRF MLP encoder
@@ -40,12 +53,36 @@ Edit `config.yaml` with your local paths:
 
 ```yaml
 paths:
-  nsd_root: "/path/to/nsd_data/"        # raw NSD download
+  # NSD raw input — each *_dir contains subjXX/ subdirectories
+  brain_mask_dir: "/path/to/nsddata/ppdata"         # subjXX/func1pt8mm/brainmask.nii.gz
+  roi_label_dir:  "/path/to/nsddata/ppdata"         # subjXX/func1pt8mm/roi/*.nii.gz
+  transforms_dir: "/path/to/nsddata/ppdata"         # subjXX/transforms/MNI-to-func1pt8.nii.gz
+  betas_dir:      "/path/to/nsddata_betas/ppdata"   # subjXX/func1pt8mm/betas_fithrf_GLMdenoise_RR/
+  expdesign_mat:  "/path/to/nsd_expdesign.mat"      # single file
+  stimuli_dir:    "/path/to/nsd_stimuli"            # S{subject}_stimuli_227.h5py
+
+  # Output directories
   data_root: "/path/to/processed_nsd/"   # preprocessing output, training reads from here
   save_root: "/path/to/nrf_runs"
 ```
 
+For a standard NSD download, `brain_mask_dir`, `roi_label_dir`, and `transforms_dir` all point to the same `ppdata/` directory. If you have custom preprocessing, point each to wherever those files live.
+
 ## NSD data preprocessing
+
+### Downloading stimulus images
+
+The training dataloader requires pre-resized 227x227 NSD stimulus images
+(`S{subject}_stimuli_227.h5py`, one per subject). Download them from Hugging Face:
+
+```bash
+pip install huggingface_hub
+huggingface-cli download haomiao8/NRF-stimuli --repo-type dataset --local-dir /path/to/stimuli
+```
+
+Then set `stimuli_dir` in `config.yaml` to the directory you downloaded them to.
+
+### Preprocessing raw NSD betas
 
 Before training, you need to preprocess raw NSD beta sessions into per-ROI response files.
 See [`nsd_data_processing/README.md`](nsd_data_processing/README.md) for full details.
@@ -58,10 +95,10 @@ python -m nsd_data_processing.getmaskedROI        --subject 1
 python -m nsd_data_processing.getmaskedROIaverage --subject 1
 ```
 
-Raw NSD data is read from `nsd_root`, and processed outputs are written under:
-`data_root/roi_masks/subjXX/`, `data_root/roi_response/subjXX/`,
-`data_root/roi_response_average/subjXX/`, and `data_root/MNI_coordinate/subjXX/`
-(all configured via `config.yaml`).
+NSD input data is read from the per-category paths in `config.yaml`.
+Processed outputs are written under `data_root/roi_masks/subjXX/`,
+`data_root/roi_response/subjXX/`, `data_root/roi_response_average/subjXX/`,
+and `data_root/MNI_coordinate/subjXX/`.
 The training dataloader reads from the same processed tree.
 
 ## Two config files
@@ -83,6 +120,33 @@ python main_train.py \
 ```
 
 This creates `<save_root>/trn_subj1/` with checkpoints, TensorBoard logs, and evaluation outputs.
+
+<!-- ### Choosing `training_image_idx`
+
+`training_image_idx` should contain **NSD image IDs**, not response row indices.
+
+- If `data_src.training_image_idx: null`, the dataloader uses IDs `>= 1000` by default (non-shared1k).
+- If you provide a `.npy`, each value must exist in `data_root/roi_response_average/subjXX/image_order.npy`.
+- The dataloader maps each image ID to a response row by matching against `image_order.npy`.
+
+Example: sample 2000 random non-shared1k IDs for one subject:
+
+```bash
+python - <<'PY'
+import numpy as np
+
+subject = 1
+num_images = 2000
+data_root = "/path/to/processed_nsd"
+order = np.load(f"{data_root}/roi_response_average/subj{subject:02d}/image_order.npy").astype(np.int32)
+candidate_ids = order[order >= 1000]  # exclude shared1k
+chosen = np.random.choice(candidate_ids, size=num_images, replace=False).astype(np.int32)
+np.save(f"subj{subject:02d}_train_ids.npy", chosen)
+print("saved", chosen.shape, "to", f"subj{subject:02d}_train_ids.npy")
+PY
+```
+
+Then pass it with `--training_image_idx subj01_train_ids.npy` (or set `data_src.training_image_idx` in YAML). -->
 
 ## Fine-tuning
 
@@ -191,6 +255,15 @@ All flags are optional and override the corresponding experiment config value.
 | `--eval_output_name` | `evaluation.output_name` | Name for the output `.h5py` file |
 
 > **Note:** When `evaluation` fields are `null`, validation uses the same subjects and ROIs specified under `data_src`.
+
+## Train / validation split
+
+The file `train/validation_idx.npy` contains 907 NSD image IDs from the shared-1k set
+(images shown to all 8 NSD subjects). These are held out for validation.
+
+When `training_image_idx` is null, the dataloader uses all image IDs >= 1000 for training
+(non-shared-1k). The 907 shared-1k IDs in `validation_idx.npy` are always used for
+end-of-epoch validation regardless of training set.
 
 ## Assumptions
 

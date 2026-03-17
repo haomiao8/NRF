@@ -42,7 +42,6 @@ _PROJECT = _load_project_config()
 PATHS = _PROJECT["paths"]
 SUBJECT_ROIS = _PROJECT["subject_rois"]
 
-NSD_ROOT = PATHS["nsd_root"]
 DATA_ROOT = PATHS["data_root"]
 SAVE_ROOT = PATHS["save_root"]
 

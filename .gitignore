@@ -1,4 +1,16 @@
 __pycache__/
+*.pyc
+*.sh
 .DS_Store
-.claude
-.sh
+.claude/
+
+# SLURM job output
+*.out
+*.err
+arch_diagnose/
+arch_diagnose_err/
+
+# Large data files
+*.h5py
+*.nii
+*.nii.gz

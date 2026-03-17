@@ -1,12 +1,31 @@
 # Path configurations
 paths:
-  # Root directories
-  nsd_root: "/midtier/cocolab/scratch/ofn9004/nsd_data"
-  data_root: "/midtier/cocolab/scratch/ofn9004/nsd_data_new"
-  save_root: "/midtier/cocolab/scratch/ofn9004/nsd_data_new"
+  # ── NSD raw input directories ──
+  # Each *_dir should contain subjXX/ subdirectories underneath.
 
-  # NSD-derived response layout under data_root/subjXX/.
-  # If you change these in your preprocessing, keep them in sync here.
+  # Brain masks — contains subjXX/func1pt8mm/brainmask.nii.gz
+  brain_mask_dir: "/path/to/nsddata/ppdata"
+
+  # ROI label volumes — contains subjXX/func1pt8mm/roi/*.nii.gz (including nsdgeneral.nii.gz)
+  roi_label_dir: "/path/to/nsddata/ppdata"
+
+  # MNI transforms — contains subjXX/transforms/MNI-to-func1pt8.nii.gz
+  transforms_dir: "/path/to/nsddata/ppdata"
+
+  # Beta sessions — contains subjXX/func1pt8mm/betas_fithrf_GLMdenoise_RR/betas_session*.nii.gz
+  betas_dir: "/path/to/nsddata_betas/ppdata"
+
+  # Experiment design matrix (single .mat file)
+  expdesign_mat: "/path/to/nsd_expdesign.mat"
+
+  # Stimulus images — contains S{subject}_stimuli_227.h5py
+  stimuli_dir: "/path/to/nsd_stimuli"
+
+  # ── Output directories ──
+  data_root: "/path/to/processed_nsd"
+  save_root: "/path/to/nrf_runs"
+
+  # Processed output layout under data_root/<dirname>/subjXX/.
   avg_response_dirname: "roi_response_average"
   coordinate_dirname: "MNI_coordinate"
   roi_masks_dirname: "roi_masks"

@@ -11,9 +11,7 @@ from scipy.io import loadmat
 from utils.config import PATHS, SUBJECT_ROIS
 
 # ── Path helpers ──
-# All raw NSD data is read from nsd_root, all processed output goes to data_root.
 
-NSD_ROOT = Path(PATHS["nsd_root"])
 DATA_ROOT = Path(PATHS["data_root"])
 
 ROI_MANIFEST = "roi_names.json"
@@ -25,30 +23,30 @@ def _subj(subject: int) -> str:
     return f"subj{subject:02d}"
 
 
-# -- Input paths (raw NSD data under nsd_root) --
+# -- Input paths (raw NSD data, each root set independently in config.yaml) --
 
 def betas_dir(subject: int) -> Path:
-    return NSD_ROOT / "responses" / _subj(subject) / "func1pt8mm" / "betas_fithrf_GLMdenoise_RR"
+    return Path(PATHS["betas_dir"]) / _subj(subject) / "func1pt8mm" / "betas_fithrf_GLMdenoise_RR"
 
 
 def brain_mask_path(subject: int) -> Path:
-    return NSD_ROOT / "mask" / "ppdata" / _subj(subject) / "func1pt8mm" / "brainmask_inflated_1.0.nii"
+    return Path(PATHS["brain_mask_dir"]) / _subj(subject) / "func1pt8mm" / "brainmask.nii.gz"
 
 
 def nsdgeneral_mask_path(subject: int) -> Path:
-    return NSD_ROOT / "roimask" / _subj(subject) / "nsdgeneral.nii.gz"
+    return Path(PATHS["roi_label_dir"]) / _subj(subject) / "func1pt8mm" / "roi" / "nsdgeneral.nii.gz"
 
 
 def roi_label_dir(subject: int) -> Path:
-    return NSD_ROOT / "mask" / "ppdata" / _subj(subject) / "func1pt8mm" / "roi"
+    return Path(PATHS["roi_label_dir"]) / _subj(subject) / "func1pt8mm" / "roi"
 
 
 def transform_path(subject: int) -> Path:
-    return NSD_ROOT / "transforms" / "ppdata" / _subj(subject) / "MNI-to-func1pt8.nii.gz"
+    return Path(PATHS["transforms_dir"]) / _subj(subject) / "transforms" / "MNI-to-func1pt8.nii.gz"
 
 
 def ordering_path() -> Path:
-    return NSD_ROOT / "experiments" / "nsd_expdesign.mat"
+    return Path(PATHS["expdesign_mat"])
 
 
 # -- Output paths (processed data under data_root) --

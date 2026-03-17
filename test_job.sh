@@ -28,14 +28,12 @@ cd "$REPO_DIR"
 export PYTHONPATH="$REPO_DIR${PYTHONPATH:+:$PYTHONPATH}"
 
 SUBJECT=1
-NSD_ROOT="$(python -c 'from utils.config import NSD_ROOT; print(NSD_ROOT)')"
 SAVE_ROOT="$(python -c 'from utils.config import SAVE_ROOT; print(SAVE_ROOT)')"
 RUN_NAME="test_pipeline"
 
 # echo "============================================="
 # echo "NRF End-to-End Pipeline Test"
 # echo "  Subject:   $SUBJECT"
-# echo "  NSD root:  $NSD_ROOT"
 # echo "  Save root: $SAVE_ROOT"
 # echo "  Run name:  $RUN_NAME"
 # echo "============================================="
@@ -107,6 +105,7 @@ RUN_NAME="test_pipeline"
 # echo "[Step 6/7] Done."
 
 # ── Step 7/7: Evaluate the fine-tuned model ──
+FT_DIR="${SAVE_ROOT}/${RUN_NAME}/ft_s${SUBJECT}_to_s${SUBJECT}"
 echo ""
 echo "[Step 7/7] Evaluating fine-tuned model on validation set..."
 python -B main_train.py \

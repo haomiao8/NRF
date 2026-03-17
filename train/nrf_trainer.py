@@ -184,7 +184,7 @@ class NRFTrainer:
             self.dataset,
             batch_size=self.config["training"]["batch_size"],
             shuffle=True,
-            num_workers=self.config["training"].get("num_workers", 4),
+            num_workers=self.config["training"].get("num_workers", 0),
         )
 
     def _build_dataset(

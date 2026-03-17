@@ -34,6 +34,9 @@ data_src:
   roi_list:
   - nsdgeneral
   average_data: true
+  # Optional path to a .npy file of NSD image IDs (not row indices).
+  # If null, training defaults to image IDs >= 1000 (non-shared1k).
+  # IDs are matched against roi_response_average/subjXX/image_order.npy.
   training_image_idx: null
 
 model:

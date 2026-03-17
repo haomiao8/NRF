@@ -8,3 +8,4 @@ tensorboard
 torch
 tqdm
 transformers
+huggingface-hub
