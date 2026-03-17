@@ -264,10 +264,3 @@ The file `train/validation_idx.npy` contains 907 NSD image IDs from the shared-1
 When `training_image_idx` is null, the dataloader uses all image IDs >= 1000 for training
 (non-shared-1k). The 907 shared-1k IDs in `validation_idx.npy` are always used for
 end-of-epoch validation regardless of training set.
-
-## Assumptions
-
-- The dataloader is NSD-specific. Images are read from `stimuli/S{subject}_stimuli_227.h5py`.
-- The CLIP image encoder is always frozen.
-- The feature merger expects exactly two CLIP layers (e.g. `selected_layers: [3, 6]`).
-- TensorBoard logging is enabled automatically when `tensorboard` is installed.
